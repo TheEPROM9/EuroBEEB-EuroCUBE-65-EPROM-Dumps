@@ -5,3 +5,5 @@ There are three ROM images:
 1. The OS
 2. BASIC IV
 3. The Custom Control Program
+
+The BASIC listing for the custom application in the optional EPROM is listed in the fire Custom_Application.
