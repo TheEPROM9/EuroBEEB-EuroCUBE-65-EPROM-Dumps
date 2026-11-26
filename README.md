@@ -13,3 +13,5 @@ I have added a KISS guide to the jumper settings on the EuroBEEB/EuroCube as the
 Also added a patched version of the OS ROM that does not start the application on boot, you can still boot said application with:
 1. PA=&2000
 2. RUN
+
+Added a section on using the keyboard & LCD, these are all supported OS components.
