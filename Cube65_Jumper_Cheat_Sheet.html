@@ -1,0 +1,102 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Cube-65 / EuroBEEB jumper cheat sheet</title>
+<style>
+body{font:16px/1.45 system-ui,Segoe UI,Arial;max-width:980px;margin:24px auto;padding:0 18px;color:#18212b}
+h1,h2{margin:.5em 0}h1{font-size:28px}h2{font-size:20px;margin-top:26px;border-bottom:1px solid #ccd5df;padding-bottom:4px}
+table{border-collapse:collapse;width:100%;margin:10px 0}th,td{border:1px solid #b9c4d0;padding:8px 10px;text-align:left;vertical-align:top}th{background:#eef3f8}
+code,pre{font-family:Consolas,"Courier New",monospace}pre{background:#f5f7fa;border:1px solid #ccd5df;padding:12px;border-radius:6px;overflow:auto}
+.ok{color:#087f5b;font-weight:700}.warn{color:#b45309;font-weight:700}.off{color:#6b7280}
+.box{background:#fff8e6;border-left:5px solid #f0b429;padding:10px 14px;margin:14px 0}
+.legend{display:flex;gap:28px;flex-wrap:wrap;margin:10px 0}.legend div{font-family:Consolas,monospace}
+</style></head><body>
+<h1>Cube-65 / EuroBEEB jumper settings — plain English</h1>
+
+<div class="legend">
+  <div><b>OPEN / off</b> &nbsp; o &nbsp; o &nbsp; (no link)</div>
+  <div><b>MADE / on</b> &nbsp; o===o &nbsp; (link fitted)</div>
+</div>
+
+<div class="box">
+<b>Bottom line for a normal Issue 5 EuroBEEB:</b> L6–L9 all open (Map 0). Leave L1 alone. Leave L2/L3 and L5 as supplied unless you know you need differential serial or have fitted the 7660 -5 V inverter. Use L4 only if you deliberately want serial BREAK to reset the machine. None of these jumpers selects the LCD or keyboard — that is software (<code>*FX3,0</code>, <code>*FX2,0</code>).
+</div>
+
+<h2>Quick table</h2>
+<table>
+<tr><th>Link</th><th>What it really does</th><th>Normal setting</th><th>Change it when…</th></tr>
+<tr><td>L1</td><td>Obsolete on Issue 5.</td><td class="off">Ignore / not used</td><td>Never.</td></tr>
+<tr><td>L2, L3</td><td>Ties the negative inputs of the differential serial receivers to 0 V, giving simple single-ended RS-423.</td><td>As supplied (single-ended serial)</td><td>You are wiring true differential RS-422 and need both wires of each pair.</td></tr>
+<tr><td>L4</td><td>Connects serial receive/BREAK to the reset line.</td><td class="ok">OPEN</td><td>You want remote reset from the serial port. Warning: manual reset then cannot be used.</td></tr>
+<tr><td>L5</td><td>Feeds -5 V from expansion bus pin 4b to the serial buffer chips.</td><td class="ok">MADE (no onboard inverter)</td><td>You fit IC13 7660 with C24/C25 — then break L5.</td></tr>
+<tr><td>L6–L9</td><td>4-bit memory-map selector. L6=1, L7=2, L8=4, L9=8.</td><td class="ok">ALL OPEN = Map 0</td><td>You deliberately want another memory map.</td></tr>
+</table>
+
+<h2>L4 — reset source</h2>
+<pre>
+  manual reset input             serial receiver / BREAK
+  (VIA pin 23 or west pin of L4)        |
+            o--------- L4 --------------o
+
+  L4 OPEN   o   o     manual reset works; serial BREAK does not
+  L4 MADE   o===o     serial BREAK resets; manual reset disabled
+</pre>
+
+<h2>L5 — where the serial chips get -5 V</h2>
+<pre>
+  expansion bus pin 4b (-5 V) o--- L5 ---o serial buffers
+
+  No 7660 fitted:   MADE   o===o   (normal)
+  7660 + C24/C25:   BREAK  o   o   (use the onboard inverter instead)
+</pre>
+
+<h2>L2 / L3 — single-ended vs differential serial</h2>
+<pre>
+  RS-423 single ended (normal/simple)
+
+  signal ----------> positive input
+  0 V ------ L2/L3 -> negative input
+
+
+  RS-422 differential (special case)
+
+  pair + -----------> positive input
+  pair - -----------> negative input     L2/L3 open
+</pre>
+
+<h2>L6–L9 — memory map as a binary number</h2>
+<pre>
+        L9  L8  L7  L6
+weight   8   4   2   1
+
+  Map 0  .   .   .   .     all open  <-- EuroBEEB normal
+  Map 12 #   #   .   .     L9+L8 made, L7+L6 open
+</pre>
+<p><code>#</code> = link made/closed, <code>.</code> = link open.</p>
+
+<h2>Memory sockets M0–M3 / M2 EPROM conversion</h2>
+<pre>
+  Each socket has 9 wire-wrap links defining the chip type.
+  Issue 5 M2 is normally linked for a 5565 8K RAM.
+
+  To fit a 2764 8K EPROM in M2:
+    wire-wrap version : rewire 5565 connections to 2764 pinout
+    tracked version   : link A to B to C
+                        drill hole D to 1 mm (no larger)
+                        cut track E
+</pre>
+<p>M4 is the fused-link PROM version number, not a user jumper.</p>
+
+<h2>Serial handshake shortcut (cable/plug link, not a PCB jumper)</h2>
+<pre>
+  7-pin DIN on EuroCUBE
+    1 TxD
+    2 0 V
+    3 RxD
+    4 BUSY / RTS
+    5 CTS
+  
+  No handshake needed: short pins 4 and 5 locally.
+  DSR / DCD / DTR: short or hold active as required.
+</pre>
+
+<p style="color:#6b7280">Source: Cube-65 User Manual, PDF pp. 4–6, 11–12, 20–23, 26.</p>
+</body></html>
