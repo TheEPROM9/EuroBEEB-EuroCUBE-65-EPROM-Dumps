@@ -1,0 +1,77 @@
+You do not need Custom_Application for the LCD or keypad. In your EuroBEEB OS dump the Jobber drivers are already present in the OS ROM:
+
+Viewline 4.00 — LCD driver
+CU-key 99 4.00 — keyboard driver
+LCD init routine at &C14F
+reset/service-3 startup already calls that init routine
+The custom app just selects the local LCD/keyboard channels and then uses ordinary PRINT/GET. The relevant lines are effectively:
+
+*FX3,0
+*FX2,0
+VDU 30
+PRINT TAB(0,0);"..."
+R=GET
+Minimal standalone setup
+Type this into BBC BASIC IV with no application ROM running:
+
+10 REM Standalone Viewline LCD + CU-key keyboard test
+20 *FX3,0
+30 *FX2,0
+40 CALL &C14F
+50 VDU 30
+60 PRINT TAB(0,0);"LCD OK"
+70 PRINT TAB(0,1);"PRESS A KEY:"
+80 REPEAT
+90   K=GET
+100 UNTIL K<>0
+110 PRINT TAB(12,1);CHR$(K)
+120 GOTO 80
+CALL &C14F is optional after a clean reset — the OS already calls it — but it is safe and useful if the display was left in an odd state by another program.
+
+What the *FX values do here
+On this machine, the important ones are:
+
+Purpose	Commands
+Local LCD display + local keypad	*FX3,0 and *FX2,0
+Serial terminal only	*FX3,7 and *FX2,1
+Serial connected, but GET still reads local keys	*FX2,2
+That matches both the custom app and the EURO terminal source:
+
+*FX3,0 — output to the local VDU/LCD path
+*FX3,7 — output to serial only
+*FX2,0 — local keyboard input
+*FX2,1 — serial input
+*FX2,2 — serial enabled, keyboard still read
+So after any serial/downloading session, always set:
+
+*FX3,0
+*FX2,0
+otherwise PRINT may go to the serial port and appear to do nothing on the LCD.
+
+Using the display
+The Viewline is 24 columns × 2 rows, so use:
+
+PRINT TAB(0,0);"LINE ONE"
+PRINT TAB(0,1);"LINE TWO"
+Useful control codes supported by the OS driver include:
+
+VDU 12 — clear display
+VDU 30 — home / reset cursor
+VDU 8, VDU 9 — cursor left/right
+VDU 10, VDU 11 — cursor down/up
+VDU 13 — carriage return
+VDU 23,... — user-defined character support
+What you can ignore from the custom app
+These are not needed for basic LCD/keyboard use:
+
+BASE.=&FE00
+TURNOFF 8:OUTCH 8
+?&FE13=&18
+?&FE0C=&0C
+?&FE12=&09
+Those are for general VIA/ACIA/control I/O used by the application. The OS already owns the LCD and keyboard hardware through its own driver routines.
+
+Control BASIC note
+You can still use Control BASIC keywords such as DELAY, CLOCK$, DATE$, SAMPLE, etc. Just avoid driving the same VIA lines that the OS peripheral drivers use unless you know exactly which port lines are free.
+
+In short: boot to BASIC, set *FX3,0 and *FX2,0, optionally call &C14F, then use PRINT, GET, GET$ and INPUT normally.
