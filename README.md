@@ -21,4 +21,16 @@ Added a section on using the keyboard & LCD, these are all supported OS componen
 Schematic for Keypad CU-KEY25: [I will make a KiCad one when I get a chance]
 ![alt text](https://github.com/TheEPROM9/EuroBEEB-EuroCUBE-65-EPROM-Dumps/blob/main/PXL_20261126_033620457.jpg?raw=true)
 
-Editing The OS ROM
+# Editing The OS ROM
+
+Changes (only the 20-byte BASIC autorun text at &F003–&F016 cleared; startup byte and language vector preserved):
+
+Offset  Old                                         New
+F000    0F A0 F1 50 41 2E 3D 26 32 30 30 30 0D ...  0F A0 F1 FF FF FF FF FF FF FF FF FF FF ...
+              ^^^^^^^ keep (0F = startup, A0 F1 = &F1A7 language entry)
+                      ^ autorun text replaced by &FF terminator/padding
+                      
+Old autorun: PA.=&2000<CR>RUN<CR>
+New autorun: empty (&FF at &F003)
+SHA-256: E4DA724569D8755A99B29238FCDE74ED860B1FC53FD39DCF55F51164DFFCF9EF
+This is a copy of your EuroBEEB_OS.bin with only that autorun command removed; burn/program it as the MOS-B.2 OS EPROM as usual.
