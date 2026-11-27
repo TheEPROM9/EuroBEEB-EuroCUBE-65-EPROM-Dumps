@@ -23,16 +23,17 @@ Schematic for Keypad CU-KEY25: [I will make a KiCad one when I get a chance]
 
 # Editing The OS ROM
 
-Changes (only the 20-byte BASIC autorun text at &F003–&F016 cleared; startup byte and language vector preserved):
+Changes (only the 20-byte BASIC auto-run text at &F003–&F016 cleared; startup byte and language vector preserved):
 
 ```
 Offset  Old                                         New
 F000    0F A0 F1 50 41 2E 3D 26 32 30 30 30 0D ...  0F A0 F1 FF FF FF FF FF FF FF FF FF FF ...
               ^^^^^^^ keep (0F = startup, A0 F1 = &F1A7 language entry)
-                      ^ autorun text replaced by &FF terminator/padding
+                      ^ auto-run text replaced by &FF terminator/padding
 ```
-                      
-Old autorun: PA.=&2000<CR>RUN<CR>
-New autorun: empty (&FF at &F003)
-SHA-256: E4DA724569D8755A99B29238FCDE74ED860B1FC53FD39DCF55F51164DFFCF9EF
-This is a copy of your EuroBEEB_OS.bin with only that autorun command removed; burn/program it as the MOS-B.2 OS EPROM as usual.
+
+```
+Old auto-run: PA.=&2000<CR>RUN<CR>
+New auto-run: empty (&FF at &F003)
+```
+These the edits you need to make to your EuroBEEB OS BIN file, it removes only the auto-run command; then burn/program it to a 27C128 or 27128 EPROM, you could also use a FLASH chip however i have not tested that. You can ether do these edits your self or get AI to do it, ether works.
