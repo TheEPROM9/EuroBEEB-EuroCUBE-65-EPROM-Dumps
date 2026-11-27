@@ -3,6 +3,13 @@ Here are the EPROM dumps from a EuroBEEB/EuroCUBE. The computer came out of a co
 
 An important resource that has helped me with what I am doing: https://github.com/croz-tech/EuroBEEB/tree/main
 
+# Euro Terminal
+The order you put these chips in your BBC B matters, if it is to the right of the BASIC chip it will auto boot. (fine if that is all you want your BEEB doing)
+I have three images so feel free to try what works for you.
+EURO414 (terminal ROM for BBC micro).ROM
+Euro-Beeb Terminal v1.00.ROM
+Euro-Beeb Terminal x4.13.ROM
+
 ![alt text](https://github.com/TheEPROM9/EuroBEEB-EuroCUBE-65-EPROM-Dumps/blob/main/PXL_20261121_221924896.MP.jpg?raw=true)
 
 There are three ROM images:
@@ -38,4 +45,4 @@ F000    0F A0 F1 50 41 2E 3D 26 32 30 30 30 0D ...  0F A0 F1 FF FF FF FF FF FF F
 Old auto-run: PA.=&2000<CR>RUN<CR>
 New auto-run: empty (&FF at &F003)
 ```
-These the edits you need to make to your EuroBEEB OS BIN file, it removes only the auto-run command; then burn/program it to a 27C128 or 27128 EPROM, you could also use a FLASH chip however i have not tested that. You can ether do these edits your self or get AI to do it, ether works.
+These the edits you need to make to your EuroBEEB OS BIN file, it removes only the auto-run command; then burn/program it to a 27C128 or 27128 EPROM, you could also use a FLASH chip however i have not tested that. You can ether do these edits your self or get AI to do it, ether works. This same process can be used to add auto-run if you want it to.
