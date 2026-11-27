@@ -15,3 +15,6 @@ Also added a patched version of the OS ROM that does not start the application o
 2. RUN
 
 Added a section on using the keyboard & LCD, these are all supported OS components.
+
+Schematic for Keypad CU-KEY25: [I will make a KiCad one when I get a chance]
+![alt text](https://github.com/TheEPROM9/EuroBEEB-EuroCUBE-65-EPROM-Dumps/blob/main/PXL_20261126_033620457.jpg?raw=true)
